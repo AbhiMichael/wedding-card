@@ -1,11 +1,11 @@
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 
 const TIMELINE_EVENTS = [
-  { time: "5 PM", name: "Guest Arrival" },
-  { time: "6 PM", name: " Madhuram Veppu" },
-  { time: "7 PM", name: "Party Time" },
+  { time: "9 AM", name: "Guest Arrival" },
+  { time: "10 AM", name: " Welcoming" },
   { time: "11 AM", name: "Wedding Ceremony" },
-  { time: "1 PM", name: "Reception" }
+  { time: "12:30 PM", name: "Welcome Toast" },
+  { time: "1 PM", name: "Lunch" },
 ];
 
 const ROSE_IMAGE_SRC = "/flower.webp";
@@ -51,8 +51,19 @@ function FallingParticle() {
 
 function HeaderFlourish({ className = "" }) {
   return (
-    <svg width="60" height="20" viewBox="0 0 60 20" fill="none" className={`wc-timeline-flourish ${className}`}>
-      <path d="M10 10 C 20 2, 25 18, 30 10 C 35 2, 40 18, 50 10" stroke="#b8874f" strokeWidth="1" strokeLinecap="round"/>
+    <svg
+      width="60"
+      height="20"
+      viewBox="0 0 60 20"
+      fill="none"
+      className={`wc-timeline-flourish ${className}`}
+    >
+      <path
+        d="M10 10 C 20 2, 25 18, 30 10 C 35 2, 40 18, 50 10"
+        stroke="#b8874f"
+        strokeWidth="1"
+        strokeLinecap="round"
+      />
       <circle cx="5" cy="10" r="1.5" fill="#b8874f" />
       <circle cx="55" cy="10" r="1.5" fill="#b8874f" />
     </svg>
@@ -73,7 +84,8 @@ export default function ScheduleSection() {
   // Lazy-init so the very first calculation already uses the right mode
   // instead of assuming mobile and correcting a moment later.
   const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches
+    () =>
+      typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches,
   );
 
   // Keep isDesktop in sync if the viewport crosses the breakpoint later.
@@ -95,7 +107,7 @@ export default function ScheduleSection() {
           observer.disconnect();
         }
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.05 }
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.05 },
     );
     observer.observe(container);
 
@@ -414,11 +426,15 @@ export default function ScheduleSection() {
             className="wc-timeline-rose-wrapper"
             style={{
               transform: `translate(calc(${roseX}px - 50%), calc(${roseY}px - 50%))`,
-              opacity: hasEntered ? 1 : 0
+              opacity: hasEntered ? 1 : 0,
             }}
           >
             {hasEntered && (
-              <img src={ROSE_IMAGE_SRC} alt="" className="wc-timeline-rose-img" />
+              <img
+                src={ROSE_IMAGE_SRC}
+                alt=""
+                className="wc-timeline-rose-img"
+              />
             )}
           </div>
 

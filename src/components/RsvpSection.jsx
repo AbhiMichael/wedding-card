@@ -43,6 +43,7 @@ const GOOGLE_SCRIPT_URL =
 const EMPTY_FORM = {
   name: "",
   attendance: "Yes",
+  guests: "1",
   message: ""
 };
 
@@ -692,7 +693,7 @@ export default function RsvpSection() {
 
         {/* Bottom Closing Signature Segment */}
         <p className="wc-rsvp__closing">Hope to see you there!</p>
-        <span className="wc-rsvp__signature">Joyal and Jismy</span>
+        <span className="wc-rsvp__signature">Joel and Jismy</span>
       </div>
 
       {isModalOpen && (
@@ -749,6 +750,23 @@ export default function RsvpSection() {
                       <option value="No">Regretfully Decline</option>
                     </select>
                   </div>
+
+                  {form.attendance === "Yes" && (
+                    <div className="wc-rsvp-field">
+                      <label htmlFor="wc-rsvp-guests">Number of Guests</label>
+                      <select
+                        id="wc-rsvp-guests"
+                        value={form.guests}
+                        onChange={(e) => updateField("guests", e.target.value)}
+                      >
+                        <option value="1">1 Person</option>
+                        <option value="2">2 Persons</option>
+                        <option value="3">3 Persons</option>
+                        <option value="4">4 Persons</option>
+                        <option value="5+">5+ Persons</option>
+                      </select>
+                    </div>
+                  )}
 
                   <div className="wc-rsvp-field">
                     <label htmlFor="wc-rsvp-message">Message (optional)</label>
