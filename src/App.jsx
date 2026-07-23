@@ -90,6 +90,13 @@ export default function App() {
   const heroRef = useRef(null);
   const loaderRef = useRef(null);
   const loaderTextRef = useRef(null);
+  // Marks the start of the content that follows the hero animation stage
+  // (Invite + everything after it), so we can scroll to it once the
+  // frame sequence finishes playing.
+  const contentRef = useRef(null);
+  // Guards against re-triggering the auto-scroll more than once per
+  // playback run (e.g. if the effect re-fires from a breakpoint change).
+  const hasAutoScrolledRef = useRef(false);
 
   // Lazy-init so the very first render (and therefore the first frame load)
   // already targets the right asset set instead of loading mobile frames
@@ -122,6 +129,10 @@ export default function App() {
     let rafId = null;
     let playbackStart = null;
     let cancelled = false;
+
+    // Reset the auto-scroll guard each time this effect (re)runs, e.g.
+    // when switching between mobile/desktop frame sets.
+    hasAutoScrolledRef.current = false;
 
     function drawFrame(frameNum) {
       const img = images[frameNum];
@@ -175,6 +186,18 @@ export default function App() {
       await Promise.all(jobs);
     }
 
+    // Auto-scrolls to the content that follows the hero stage, once the
+    // frame animation has finished playing. Only fires if the visitor
+    // is still near the top (hasn't already scrolled away on their own),
+    // and only fires once per playback run.
+    function scrollToContent() {
+      if (hasAutoScrolledRef.current) return;
+      if (window.scrollY > 50) return; // respect manual scrolling
+      if (!contentRef.current) return;
+      hasAutoScrolledRef.current = true;
+      contentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     function playback(timestamp) {
       if (cancelled) return;
       if (playbackStart === null) playbackStart = timestamp;
@@ -187,6 +210,9 @@ export default function App() {
       }
       if (frameOffset < frameCount - 1) {
         rafId = requestAnimationFrame(playback);
+      } else {
+        // Last frame has been drawn — the sequence is complete.
+        scrollToContent();
       }
     }
 
@@ -383,13 +409,13 @@ export default function App() {
       </div>
 
       {isLoaded && (
-        <>
+        <div ref={contentRef}>
           <Invite />
           <VenueSection />
           <ScheduleSection />
           <Family />
           <RsvpSection />
-        </>
+        </div>
       )}
       
     </>
