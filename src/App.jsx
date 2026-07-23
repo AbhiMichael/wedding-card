@@ -105,6 +105,7 @@ export default function App() {
   const heroRef = useRef(null);
   const loaderRef = useRef(null);
   const loaderTextRef = useRef(null);
+  const musicHintRef = useRef(null);
   const contentRef = useRef(null);
   const hasAutoScrolledRef = useRef(false);
 
@@ -205,6 +206,9 @@ export default function App() {
     let cancelled = false;
 
     hasAutoScrolledRef.current = false;
+    if (musicHintRef.current) {
+      musicHintRef.current.classList.remove("is-visible");
+    }
 
     function drawFrame(frameNum) {
       const img = images[frameNum];
@@ -255,14 +259,20 @@ export default function App() {
 
       const updateProgress = () => {
         loaded++;
+        const pct = Math.round((loaded / totalToLoad) * 100);
         if (loaderTextRef.current) {
-          const pct = Math.round((loaded / totalToLoad) * 100);
           loaderTextRef.current.textContent = `Loading ${pct}%`;
+        }
+        if (musicHintRef.current && pct >= 15) {
+          musicHintRef.current.classList.add("is-visible");
         }
       };
 
-      jobs.push(loadAudio().then(updateProgress));
+      // 1. Load the music FIRST, on its own, before anything else starts loading.
+      await loadAudio();
+      updateProgress();
 
+      // 2. Only now start loading frames + static images in the background.
       for (let f = start; f <= end; f++) {
         jobs.push(loadFrame(f).then(updateProgress));
       }
@@ -385,13 +395,17 @@ export default function App() {
           font-size: .68rem;
           letter-spacing: .03em;
           color: var(--gold);
-          opacity: .85;
+          opacity: 0;
+          transition: opacity .6s ease;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           gap: 8px;
           background: none;
+        }
+        .wc-loader__music-hint.is-visible{
+          opacity: .85;
         }
         .wc-loader__music-hint svg{
           width: 22px;
@@ -538,7 +552,7 @@ export default function App() {
       <div className="wc-loader" ref={loaderRef}>
         <div className="wc-loader__ring" />
         <p className="wc-loader__text" ref={loaderTextRef}>Loading</p>
-        <p className="wc-loader__music-hint">
+        <p className="wc-loader__music-hint" ref={musicHintRef}>
           <span>click here to start music</span>
           <SpeakerOnIcon />
         </p>
