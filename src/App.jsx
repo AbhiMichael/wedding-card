@@ -42,6 +42,9 @@ const STATIC_IMAGES = [
   "/welcomed.webp"
 ];
 
+// Any of these count as "the visitor did something" and unlock real (unmuted) audio.
+const UNLOCK_EVENTS = ["pointerdown", "touchstart", "keydown", "scroll", "wheel"];
+
 function FallingParticle() {
   const [style, setStyle] = useState({});
 
@@ -123,52 +126,55 @@ export default function App() {
     return () => mq.removeEventListener("change", handleChange);
   }, []);
 
-  // Handle playing music automatically & unlocking on first gesture
+  // ---- Music: warm it up muted immediately, unlock real sound on first interaction ----
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     audio.volume = 0.5;
-    audio.muted = false;
 
-    // Helper function to attempt play
-    const attemptPlay = () => {
+    // Keep the icon truthful: reflect what the <audio> element is actually doing,
+    // instead of guessing based on which call we *tried* to make.
+    const markPlaying = () => setIsMuted(false);
+    const markPaused = () => setIsMuted(true);
+    audio.addEventListener("playing", markPlaying);
+    audio.addEventListener("pause", markPaused);
+
+    const tryUnmutedPlay = () => {
       audio.muted = false;
-      const playPromise = audio.play();
-
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            setIsMuted(false);
-            // Once playing succeeds, clean up gesture listeners
-            cleanupListeners();
-          })
-          .catch(() => {
-            // Autoplay blocked by browser policy. Keep state as unmuted visually.
-            setIsMuted(false);
-          });
-      }
+      const p = audio.play();
+      if (p !== undefined) p.catch(() => {});
     };
 
     const cleanupListeners = () => {
-      window.removeEventListener("pointerdown", attemptPlay);
-      window.removeEventListener("touchstart", attemptPlay);
-      window.removeEventListener("keydown", attemptPlay);
-      window.removeEventListener("scroll", attemptPlay);
+      UNLOCK_EVENTS.forEach((evt) => window.removeEventListener(evt, unlock));
     };
 
-    // 1. Try playing immediately on load
-    attemptPlay();
+    const unlock = () => {
+      tryUnmutedPlay();
+      cleanupListeners();
+    };
 
-    // 2. Attach one-time listeners to any user interaction (scroll, touch, click, key)
-    // to bypass browser autoplay restriction as soon as visitor touches the page
-    window.addEventListener("pointerdown", attemptPlay, { once: true });
-    window.addEventListener("touchstart", attemptPlay, { once: true });
-    window.addEventListener("keydown", attemptPlay, { once: true });
-    window.addEventListener("scroll", attemptPlay, { once: true });
+    // 1. Silent autoplay is allowed by every browser - start it muted right away so
+    //    it's already running (not stalled) the instant sound gets unlocked.
+    audio.muted = true;
+    audio.play().catch(() => {});
+
+    // 2. Try for real immediately too, in case this browser/session already has
+    //    autoplay permission (e.g. user has interacted with the site before).
+    tryUnmutedPlay();
+
+    // 3. The very first interaction of ANY kind - not just the speaker button -
+    //    unmutes and plays. On mobile this is usually the first scroll/swipe,
+    //    so in practice sound starts within moments of the page loading.
+    UNLOCK_EVENTS.forEach((evt) =>
+      window.addEventListener(evt, unlock, { once: true, passive: true })
+    );
 
     return () => {
       cleanupListeners();
+      audio.removeEventListener("playing", markPlaying);
+      audio.removeEventListener("pause", markPaused);
     };
   }, []);
 
@@ -176,14 +182,12 @@ export default function App() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isMuted) {
+    if (audio.paused || audio.muted) {
       audio.muted = false;
       audio.play().catch(() => {});
-      setIsMuted(false);
     } else {
       audio.muted = true;
       audio.pause();
-      setIsMuted(true);
     }
   };
 
@@ -223,10 +227,31 @@ export default function App() {
       });
     }
 
+    // Preload the music itself as part of the loading-screen progress,
+    // so it's fully buffered and ready the instant content is revealed.
+    function loadAudio() {
+      return new Promise((resolve) => {
+        const audio = audioRef.current;
+        if (!audio) return resolve();
+        if (audio.readyState >= 3) return resolve(); // HAVE_FUTURE_DATA or better
+        const cleanup = () => {
+          audio.removeEventListener("canplaythrough", onReady);
+          audio.removeEventListener("error", onReady);
+        };
+        const onReady = () => {
+          cleanup();
+          resolve();
+        };
+        audio.addEventListener("canplaythrough", onReady, { once: true });
+        audio.addEventListener("error", onReady, { once: true });
+        audio.load();
+      });
+    }
+
     async function loadAll() {
       let loaded = 0;
       const jobs = [];
-      const totalToLoad = frameCount + STATIC_IMAGES.length;
+      const totalToLoad = frameCount + STATIC_IMAGES.length + 1; // +1 for audio
 
       const updateProgress = () => {
         loaded++;
@@ -235,6 +260,8 @@ export default function App() {
           loaderTextRef.current.textContent = `Loading ${pct}%`;
         }
       };
+
+      jobs.push(loadAudio().then(updateProgress));
 
       for (let f = start; f <= end; f++) {
         jobs.push(loadFrame(f).then(updateProgress));
@@ -352,6 +379,30 @@ export default function App() {
         }
         @keyframes wc-spin{ to{ transform:rotate(360deg); } }
         .wc-loader__text{ font-size:.7rem; letter-spacing:.25em; text-transform:uppercase; color:var(--grey); }
+        .wc-loader__music-hint{
+          font-family: var(--serif);
+          font-style: italic;
+          font-size: .68rem;
+          letter-spacing: .03em;
+          color: var(--gold);
+          opacity: .85;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          background: none;
+        }
+        .wc-loader__music-hint svg{
+          width: 22px;
+          height: 22px;
+          flex-shrink: 0;
+        }
+        .wc-loader__music-hint svg polygon,
+        .wc-loader__music-hint svg path{
+          fill: var(--gold);
+          stroke: var(--gold);
+        }
         
         .wc-stage{
           position:relative; height:100vh; height:100svh; width:100%;
@@ -487,6 +538,10 @@ export default function App() {
       <div className="wc-loader" ref={loaderRef}>
         <div className="wc-loader__ring" />
         <p className="wc-loader__text" ref={loaderTextRef}>Loading</p>
+        <p className="wc-loader__music-hint">
+          <span>click here to start music</span>
+          <SpeakerOnIcon />
+        </p>
       </div>
 
       {/* Main Landing Video Stage */}
