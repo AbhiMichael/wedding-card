@@ -4,14 +4,8 @@ import ScheduleSection from "./components/ScheduleSection";
 import RsvpSection from "./components/RsvpSection";
 import Family from "./components/Family";
 import Invite from "./components/Invite";
-import InvitationSection from "./components/InvitationSection"; // adjust relative path as needed
+import InvitationSection from "./components/InvitationSection";
 
-// Two separate frame sets: the existing mobile sequence, and a new one for
-// desktop pulling from /images_d. Adjust `start`/`end`/`fps` per set
-// independently — I've assumed images_d is numbered 1 through 240 with the
-// same "frame_NN.webp" naming as the mobile set, since that wasn't specified.
-// If your actual files are named differently, update `start`/`end` (and the
-// filename template in framePath below) to match.
 const FRAME_SETS = {
   mobile: {
     folder: "/images",
@@ -27,7 +21,6 @@ const FRAME_SETS = {
   }
 };
 
-// Matches the breakpoint already used elsewhere on the site (Invite.jsx).
 const DESKTOP_QUERY = "(min-width: 900px)";
 
 const framePath = (folder, i) => `${folder}/frame_${String(i).padStart(2, "0")}.webp`;
@@ -49,7 +42,6 @@ const STATIC_IMAGES = [
   "/welcomed.webp"
 ];
 
-// Reusable falling petal component matching the landing stage
 function FallingParticle() {
   const [style, setStyle] = useState({});
 
@@ -85,22 +77,38 @@ function FallingParticle() {
   );
 }
 
+function SpeakerOnIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polygon points="4 9 8 9 12 5 12 19 8 15 4 15 4 9" fill="#8c6a41" />
+      <path d="M15.8 8.2a5 5 0 0 1 0 7.6" stroke="#8c6a41" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M18.3 5.6a9 9 0 0 1 0 12.8" stroke="#8c6a41" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SpeakerOffIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polygon points="4 9 8 9 12 5 12 19 8 15 4 15 4 9" fill="#8c6a41" />
+      <line x1="16.2" y1="9" x2="21.5" y2="15" stroke="#8c6a41" strokeWidth="1.6" strokeLinecap="round" />
+      <line x1="21.5" y1="9" x2="16.2" y2="15" stroke="#8c6a41" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function App() {
   const canvasRef = useRef(null);
   const heroRef = useRef(null);
   const loaderRef = useRef(null);
   const loaderTextRef = useRef(null);
-  // Marks the start of the content that follows the hero animation stage
-  // (Invite + everything after it), so we can scroll to it once the
-  // frame sequence finishes playing.
   const contentRef = useRef(null);
-  // Guards against re-triggering the auto-scroll more than once per
-  // playback run (e.g. if the effect re-fires from a breakpoint change).
   const hasAutoScrolledRef = useRef(false);
 
-  // Lazy-init so the very first render (and therefore the first frame load)
-  // already targets the right asset set instead of loading mobile frames
-  // first and then re-loading desktop ones a moment later.
+  // Background music: Default state is Speaker ON (isMuted = false)
+  const audioRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(false);
+
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches
   );
@@ -108,14 +116,76 @@ export default function App() {
 
   const upperParticles = Array.from({ length: 25 }, (_, i) => i);
 
-  // Keep isDesktop in sync if the viewport crosses the breakpoint later
-  // (window resize, devtools, folding a tablet, etc.).
   useEffect(() => {
     const mq = window.matchMedia(DESKTOP_QUERY);
     const handleChange = (e) => setIsDesktop(e.matches);
     mq.addEventListener("change", handleChange);
     return () => mq.removeEventListener("change", handleChange);
   }, []);
+
+  // Handle playing music automatically & unlocking on first gesture
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.volume = 0.5;
+    audio.muted = false;
+
+    // Helper function to attempt play
+    const attemptPlay = () => {
+      audio.muted = false;
+      const playPromise = audio.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsMuted(false);
+            // Once playing succeeds, clean up gesture listeners
+            cleanupListeners();
+          })
+          .catch(() => {
+            // Autoplay blocked by browser policy. Keep state as unmuted visually.
+            setIsMuted(false);
+          });
+      }
+    };
+
+    const cleanupListeners = () => {
+      window.removeEventListener("pointerdown", attemptPlay);
+      window.removeEventListener("touchstart", attemptPlay);
+      window.removeEventListener("keydown", attemptPlay);
+      window.removeEventListener("scroll", attemptPlay);
+    };
+
+    // 1. Try playing immediately on load
+    attemptPlay();
+
+    // 2. Attach one-time listeners to any user interaction (scroll, touch, click, key)
+    // to bypass browser autoplay restriction as soon as visitor touches the page
+    window.addEventListener("pointerdown", attemptPlay, { once: true });
+    window.addEventListener("touchstart", attemptPlay, { once: true });
+    window.addEventListener("keydown", attemptPlay, { once: true });
+    window.addEventListener("scroll", attemptPlay, { once: true });
+
+    return () => {
+      cleanupListeners();
+    };
+  }, []);
+
+  const toggleMute = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isMuted) {
+      audio.muted = false;
+      audio.play().catch(() => {});
+      setIsMuted(false);
+    } else {
+      audio.muted = true;
+      audio.pause();
+      setIsMuted(true);
+    }
+  };
 
   useEffect(() => {
     const { folder, start, end, fps } = isDesktop ? FRAME_SETS.desktop : FRAME_SETS.mobile;
@@ -130,8 +200,6 @@ export default function App() {
     let playbackStart = null;
     let cancelled = false;
 
-    // Reset the auto-scroll guard each time this effect (re)runs, e.g.
-    // when switching between mobile/desktop frame sets.
     hasAutoScrolledRef.current = false;
 
     function drawFrame(frameNum) {
@@ -186,13 +254,9 @@ export default function App() {
       await Promise.all(jobs);
     }
 
-    // Auto-scrolls to the content that follows the hero stage, once the
-    // frame animation has finished playing. Only fires if the visitor
-    // is still near the top (hasn't already scrolled away on their own),
-    // and only fires once per playback run.
     function scrollToContent() {
       if (hasAutoScrolledRef.current) return;
-      if (window.scrollY > 50) return; // respect manual scrolling
+      if (window.scrollY > 50) return;
       if (!contentRef.current) return;
       hasAutoScrolledRef.current = true;
       contentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -211,13 +275,10 @@ export default function App() {
       if (frameOffset < frameCount - 1) {
         rafId = requestAnimationFrame(playback);
       } else {
-        // Last frame has been drawn — the sequence is complete.
         scrollToContent();
       }
     }
 
-    // Switching frame sets (e.g. resizing across the breakpoint) should
-    // show the loader again while the new set streams in.
     canvasSized = false;
     if (loaderRef.current) {
       loaderRef.current.classList.remove("is-hidden");
@@ -352,47 +413,76 @@ export default function App() {
         }
         .wc-invite__rsvp{ margin-top:8px; font-family:var(--sans); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:#8c7a63; }
 
-        /* ---- Aesthetic Countdown Module Styles ---- */
-        .wc-countdown-stage {
-          display: inline-flex;
+        /* ---- Transparent Sound Toggle ---- */
+        .wc-sound-toggle{
+          position: fixed;
+          left: 16px;
+          bottom: 16px;
+          z-index: 1000;
+          width: 32px;
+          height: 32px;
+          border: none;
+          background: transparent;
+          display: flex;
           align-items: center;
           justify-content: center;
-          gap: clamp(6px, 2vw, 14px);
-          margin: 18px 0;
-          padding: 8px 12px;
-          min-height: 80px;
+          padding: 0;
+          cursor: pointer;
+          transition: transform .2s ease;
         }
-        .wc-countdown__unit {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
+        .wc-sound-toggle:hover{ transform: scale(1.15); }
+        .wc-sound-toggle:active{ transform: scale(0.9); }
+        .wc-sound-toggle:focus-visible{ outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 4px; }
+        .wc-sound-toggle svg{ width: 24px; height: 24px; display: block; }
+
+        /* ---- Scroll text ticker ---- */
+        .wc-scroll-ticker{
+          position: relative;
+          z-index: 4;
+          overflow: hidden;
+          width: 100%;
+          max-width: 320px;
+          margin: 32px auto 0;
+          padding: 7px 0;
+          border-top: 1px solid rgba(140, 122, 99, 0.25);
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
         }
-        .wc-countdown__digit {
+        .wc-scroll-ticker__track{
+          display: inline-flex;
+          gap: 48px;
+          white-space: nowrap;
+          animation: wc-ticker-scroll 16s linear infinite;
+        }
+        .wc-scroll-ticker__track span{
           font-family: var(--serif);
-          font-weight: 400;
-          font-size: clamp(2rem, 5vw, 3.2rem);
-          color: #4a3c2e;
-          line-height: 1;
-          transition: transform 0.2s ease-in-out;
-        }
-        .wc-countdown__digit--live {
-          color: #b8874f;
-        }
-        .wc-countdown__label {
-          font-family: var(--sans);
-          font-size: 0.6rem;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
+          font-style: italic;
+          font-size: .68rem;
+          letter-spacing: .06em;
           color: #8c7a63;
-          margin-top: 6px;
         }
-        .wc-countdown__separator {
-          font-family: var(--serif);
-          font-size: clamp(1.4rem, 4vw, 2.2rem);
-          color: rgba(184, 135, 79, 0.4);
-          transform: translateY(-8px);
+        @keyframes wc-ticker-scroll{
+          from{ transform: translateX(0); }
+          to{ transform: translateX(-50%); }
+        }
+        @media (prefers-reduced-motion: reduce){
+          .wc-scroll-ticker__track{ animation: none; }
         }
       `}</style>
+
+      {/* HTML5 audio element with autoplay attribute set */}
+      <audio ref={audioRef} src="/music.mp3" loop autoPlay preload="auto" />
+
+      <button
+        type="button"
+        className="wc-sound-toggle"
+        onClick={toggleMute}
+        aria-pressed={!isMuted}
+        aria-label={isMuted ? "Unmute background music" : "Mute background music"}
+        title={isMuted ? "Unmute music" : "Mute music"}
+      >
+        {isMuted ? <SpeakerOffIcon /> : <SpeakerOnIcon />}
+      </button>
 
       <div className="wc-loader" ref={loaderRef}>
         <div className="wc-loader__ring" />
@@ -417,7 +507,6 @@ export default function App() {
           <RsvpSection />
         </div>
       )}
-      
     </>
   );
 }

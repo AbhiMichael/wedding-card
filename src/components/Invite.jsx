@@ -77,11 +77,6 @@ export default function Invite() {
           justify-content: center;
         }
 
-        /* Frame fills the full viewport — no letterboxing. The image is
-           applied as a CSS background (not an <img> tag) so we can swap
-           the source at a breakpoint: frame.webp on mobile, frame_d.webp
-           on desktop. background-size: cover crops to fill either way, so
-           there's never blank space at the top/bottom or sides. */
         .wc-frame {
           position: relative;
           width: 100vw;
@@ -93,8 +88,6 @@ export default function Invite() {
           background-repeat: no-repeat;
         }
 
-        /* Swap to the desktop artwork at wider viewports. Adjust this
-           breakpoint if you'd rather switch at a different width. */
         @media (min-width: 900px) {
           .wc-frame {
             background-image: url('/frame_d.webp');
@@ -230,15 +223,85 @@ export default function Invite() {
           color: #6b4a2b;
         }
 
-        /* ---------- Desktop overrides ----------
-           cqw scales directly with viewport width, which looks right on a
-           phone-width frame but would make text enormous at 1400px+ wide.
-           These overrides swap to clamp()-based sizes with sane min/max
-           bounds instead. The "top" percentages below start as a straight
-           copy of the mobile values — I don't have frame_d.webp to check
-           against, so once you drop that image in, nudge these percentages
-           to line up with its actual artwork (names, date block, etc. may
-           sit in different spots on a desktop-oriented layout). */
+        /* ---------- Scroll Indicator ---------- */
+        .wc-scroll-indicator {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 80px; /* height of the overlay gradient */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end; /* push content to the bottom */
+          padding-bottom: 20px; /* distance from the very bottom */
+          gap: 4px;
+          z-index: 15;
+          pointer-events: none;
+          
+          /* Dark Gradient Overlay for contrast */
+          background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .wc-scroll-text {
+          font-family: 'Cormorant Garamond', serif;
+          font-style: italic;
+          font-size: 0.85rem;
+          letter-spacing: 0.15em;
+          text-transform: lowercase;
+          color: #ffffff; /* pure white text */
+          
+          /* Text shadow for extra legibility */
+          text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+          
+          animation: wc-bounce 2s infinite;
+        }
+
+        .wc-scroll-arrow {
+          width: 10px;
+          height: 10px;
+          border-right: 1.5px solid #ffffff;
+          border-bottom: 1.5px solid #ffffff;
+          transform: rotate(45deg);
+          
+          /* shadow for the arrow graphic */
+          filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+          
+          animation: wc-bounce 2s infinite;
+        }
+
+        @keyframes wc-bounce {
+          0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0) rotate(45deg); /* keep arrow rotation */
+          }
+          40% {
+            transform: translateY(6px) rotate(45deg);
+          }
+          60% {
+            transform: translateY(3px) rotate(45deg);
+          }
+        }
+        
+        /* Specific keyframe for text that doesn't need rotation */
+        @keyframes wc-text-bounce {
+          0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+          }
+          40% {
+            transform: translateY(6px);
+          }
+          60% {
+            transform: translateY(3px);
+          }
+        }
+        
+        /* apply specific animation to text */
+        .wc-scroll-text {
+             animation: wc-text-bounce 2s infinite;
+        }
+
+
+        /* ---------- Desktop overrides ---------- */
         @media (min-width: 900px) {
           .wc-cross {
             top: 6%;
@@ -305,6 +368,15 @@ export default function Invite() {
           .wc-compliments {
             top: 58%;
             font-size: clamp(15px, 1vw, 19px);
+          }
+
+          .wc-scroll-indicator {
+            height: 100px;
+            padding-bottom: 25px;
+          }
+
+          .wc-scroll-text {
+            font-size: 0.95rem;
           }
         }
 
@@ -373,11 +445,16 @@ export default function Invite() {
 
           <p className="wc-line wc-date">On Saturday, 29th August, 2026</p>
           <p className="wc-line wc-time">at 11:00 am</p>
-          {/* <p className="wc-line wc-lunch">Followed By Lunch</p> */}
 
           <p className="wc-line wc-compliments">
             Best compliments from family members
           </p>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="wc-scroll-indicator" aria-hidden="true">
+          <span className="wc-scroll-text">scroll down</span>
+          <div className="wc-scroll-arrow" />
         </div>
       </div>
     </section>
