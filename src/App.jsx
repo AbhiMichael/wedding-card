@@ -113,6 +113,11 @@ export default function App() {
   const audioRef = useRef(null);
   const [isMuted, setIsMuted] = useState(false);
 
+  // Loading-screen hint only: starts as "off" and flips to "on" the moment
+  // the visitor interacts with the page (click/tap/scroll/key), independent
+  // of the real toggle button above.
+  const [hintUnlocked, setHintUnlocked] = useState(false);
+
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches
   );
@@ -154,6 +159,7 @@ export default function App() {
     const unlock = () => {
       tryUnmutedPlay();
       cleanupListeners();
+      setHintUnlocked(true);
     };
 
     // 1. Silent autoplay is allowed by every browser - start it muted right away so
@@ -546,7 +552,9 @@ export default function App() {
         aria-label={isMuted ? "Unmute background music" : "Mute background music"}
         title={isMuted ? "Unmute music" : "Mute music"}
       >
-        {isMuted ? <SpeakerOffIcon /> : <SpeakerOnIcon />}
+        {!isLoaded
+          ? (hintUnlocked ? <SpeakerOnIcon /> : <SpeakerOffIcon />)
+          : (isMuted ? <SpeakerOffIcon /> : <SpeakerOnIcon />)}
       </button>
 
       <div className="wc-loader" ref={loaderRef}>
