@@ -11,19 +11,20 @@ const FRAME_SETS = {
     folder: "/images",
     start: 20,
     end: 185,
-    fps: 30
+    fps: 30,
   },
   desktop: {
     folder: "/images_d",
     start: 1,
     end: 80,
-    fps: 30
-  }
+    fps: 30,
+  },
 };
 
 const DESKTOP_QUERY = "(min-width: 900px)";
 
-const framePath = (folder, i) => `${folder}/frame_${String(i).padStart(2, "0")}.webp`;
+const framePath = (folder, i) =>
+  `${folder}/frame_${String(i).padStart(2, "0")}.webp`;
 
 const STATIC_IMAGES = [
   "/church.webp",
@@ -39,11 +40,17 @@ const STATIC_IMAGES = [
   "/ss.webp",
   "/welcome.webp",
   "/welcome2.webp",
-  "/welcomed.webp"
+  "/welcomed.webp",
 ];
 
 // Any of these count as "the visitor did something" and unlock real (unmuted) audio.
-const UNLOCK_EVENTS = ["pointerdown", "touchstart", "keydown", "scroll", "wheel"];
+const UNLOCK_EVENTS = [
+  "pointerdown",
+  "touchstart",
+  "keydown",
+  "scroll",
+  "wheel",
+];
 
 function FallingParticle() {
   const [style, setStyle] = useState({});
@@ -82,20 +89,56 @@ function FallingParticle() {
 
 function SpeakerOnIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
       <polygon points="4 9 8 9 12 5 12 19 8 15 4 15 4 9" fill="#8c6a41" />
-      <path d="M15.8 8.2a5 5 0 0 1 0 7.6" stroke="#8c6a41" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M18.3 5.6a9 9 0 0 1 0 12.8" stroke="#8c6a41" strokeWidth="1.6" strokeLinecap="round" />
+      <path
+        d="M15.8 8.2a5 5 0 0 1 0 7.6"
+        stroke="#8c6a41"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18.3 5.6a9 9 0 0 1 0 12.8"
+        stroke="#8c6a41"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
 function SpeakerOffIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
       <polygon points="4 9 8 9 12 5 12 19 8 15 4 15 4 9" fill="#8c6a41" />
-      <line x1="16.2" y1="9" x2="21.5" y2="15" stroke="#8c6a41" strokeWidth="1.6" strokeLinecap="round" />
-      <line x1="21.5" y1="9" x2="16.2" y2="15" stroke="#8c6a41" strokeWidth="1.6" strokeLinecap="round" />
+      <line
+        x1="16.2"
+        y1="9"
+        x2="21.5"
+        y2="15"
+        stroke="#8c6a41"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <line
+        x1="21.5"
+        y1="9"
+        x2="16.2"
+        y2="15"
+        stroke="#8c6a41"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -119,7 +162,8 @@ export default function App() {
   const [hintUnlocked, setHintUnlocked] = useState(false);
 
   const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches
+    () =>
+      typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches,
   );
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -175,7 +219,7 @@ export default function App() {
     //    unmutes and plays. On mobile this is usually the first scroll/swipe,
     //    so in practice sound starts within moments of the page loading.
     UNLOCK_EVENTS.forEach((evt) =>
-      window.addEventListener(evt, unlock, { once: true, passive: true })
+      window.addEventListener(evt, unlock, { once: true, passive: true }),
     );
 
     return () => {
@@ -199,7 +243,9 @@ export default function App() {
   };
 
   useEffect(() => {
-    const { folder, start, end, fps } = isDesktop ? FRAME_SETS.desktop : FRAME_SETS.mobile;
+    const { folder, start, end, fps } = isDesktop
+      ? FRAME_SETS.desktop
+      : FRAME_SETS.mobile;
     const frameCount = end - start + 1;
     const frameDurationMs = 1000 / fps;
 
@@ -290,7 +336,7 @@ export default function App() {
             img.onload = resolve;
             img.onerror = resolve;
             img.src = src;
-          }).then(updateProgress)
+          }).then(updateProgress),
         );
       }
 
@@ -309,7 +355,10 @@ export default function App() {
       if (cancelled) return;
       if (playbackStart === null) playbackStart = timestamp;
       const elapsed = timestamp - playbackStart;
-      const frameOffset = Math.min(frameCount - 1, Math.floor(elapsed / frameDurationMs));
+      const frameOffset = Math.min(
+        frameCount - 1,
+        Math.floor(elapsed / frameDurationMs),
+      );
       drawFrame(start + frameOffset);
       if (heroRef.current) {
         const progress = frameOffset / (frameCount - 1);
@@ -549,17 +598,29 @@ export default function App() {
         className="wc-sound-toggle"
         onClick={toggleMute}
         aria-pressed={!isMuted}
-        aria-label={isMuted ? "Unmute background music" : "Mute background music"}
+        aria-label={
+          isMuted ? "Unmute background music" : "Mute background music"
+        }
         title={isMuted ? "Unmute music" : "Mute music"}
       >
-        {!isLoaded
-          ? (hintUnlocked ? <SpeakerOnIcon /> : <SpeakerOffIcon />)
-          : (isMuted ? <SpeakerOffIcon /> : <SpeakerOnIcon />)}
+        {!isLoaded ? (
+          hintUnlocked ? (
+            <SpeakerOnIcon />
+          ) : (
+            <SpeakerOffIcon />
+          )
+        ) : isMuted ? (
+          <SpeakerOffIcon />
+        ) : (
+          <SpeakerOnIcon />
+        )}
       </button>
 
       <div className="wc-loader" ref={loaderRef}>
         <div className="wc-loader__ring" />
-        <p className="wc-loader__text" ref={loaderTextRef}>Loading</p>
+        <p className="wc-loader__text" ref={loaderTextRef}>
+          Loading
+        </p>
         <p className="wc-loader__music-hint" ref={musicHintRef}>
           <span>click here to start music</span>
           <SpeakerOnIcon />
@@ -569,9 +630,15 @@ export default function App() {
       {/* Main Landing Video Stage */}
       <div className="wc-stage">
         <div className="wc-global-particle-field">
-          {upperParticles.map((id) => <FallingParticle key={`stage-${id}`} />)}
+          {upperParticles.map((id) => (
+            <FallingParticle key={`stage-${id}`} />
+          ))}
         </div>
-        <canvas className="wc-canvas" ref={canvasRef} aria-label="Animated photo sequence" />
+        <canvas
+          className="wc-canvas"
+          ref={canvasRef}
+          aria-label="Animated photo sequence"
+        />
         <div className="wc-hero" ref={heroRef} />
       </div>
 
