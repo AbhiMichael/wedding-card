@@ -445,7 +445,7 @@ export default function Invite() {
           <p className="wc-line wc-divider" />
 
           <p className="wc-line wc-date">On Saturday, 29th August, 2026</p>
-          <p className="wc-line wc-time">at 11:00 am</p>  
+          <p className="wc-line wc-time">at 10:30 am</p>
 
           <p className="wc-line wc-compliments">
             Best compliments from family members
