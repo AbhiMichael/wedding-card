@@ -112,7 +112,7 @@ export default function Invite() {
 
         .wc-cross {
           position: absolute;
-          top: 6%;
+          top: 5%;
           left: 50%;
           transform: translateX(-50%);
           width: 7cqw;
@@ -120,7 +120,7 @@ export default function Invite() {
         }
 
         .wc-invited {
-          top: 14.2%;
+          top: 11%;
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
           font-size: 3.3cqw;
@@ -129,7 +129,7 @@ export default function Invite() {
         }
 
         .wc-ceremony {
-          top: 17.3%;
+          top: 14%;
           font-family: 'Playfair Display', serif;
           font-weight: 700;
           font-size: 4.4cqw;
@@ -139,13 +139,14 @@ export default function Invite() {
 
         .wc-parent-line {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 2.7cqw;
+          font-size: 3.5cqw; 
           letter-spacing: 0.02em;
           color: #5b3f26;
+          line-height: 1.3;
         }
 
-        .wc-bride-parents { top: 21.3%; }
-        .wc-groom-parents { top: 45.3%; }
+        .wc-bride-parents { top: 17.5%; }
+        .wc-groom-parents { top: 43.5%; }
 
         .wc-name {
           font-family: 'Great Vibes', cursive;
@@ -154,8 +155,8 @@ export default function Invite() {
           color: #4a3220;
         }
 
-        .wc-groom-name { top: 25.5%; }
-        .wc-bride-name { top: 37%; }
+        .wc-groom-name { top: 25%; }
+        .wc-bride-name { top: 36%; }
 
         .wc-role-label {
           font-family: 'Cormorant Garamond', serif;
@@ -165,18 +166,18 @@ export default function Invite() {
           color: #8a6d3f;
         }
 
-        .wc-groom-role { top: 30.7%; }
-        .wc-bride-role { top: 42.2%; }
+        .wc-groom-role { top: 30%; }
+        .wc-bride-role { top: 41.5%; }
 
         .wc-amp {
-          top: 32.5%;
+          top: 31%;
           font-family: 'Great Vibes', cursive;
           font-size: 6cqw;
           color: #6b4a2b;
         }
 
         .wc-divider {
-          top: 48.6%;
+          top: 50%;
           font-size: 2.4cqw;
           color: #8a6d3f;
         }
@@ -192,7 +193,7 @@ export default function Invite() {
         }
 
         .wc-date {
-          top: 51.5%;
+          top: 53%;
           font-family: 'Playfair Display', serif;
           font-weight: 700;
           font-size: 3.6cqw;
@@ -200,21 +201,21 @@ export default function Invite() {
         }
 
         .wc-time {
-          top: 54.3%;
+          top: 56%;
           font-family: 'Cormorant Garamond', serif;
-          font-size: 2.6cqw;
+          font-size: 3.5cqw; 
           color: #5b3f26;
         }
 
         .wc-lunch {
-          top: 56.6%;
+          top: 58%;
           font-family: 'Cormorant Garamond', serif;
           font-size: 2.6cqw;
           color: #5b3f26;
         }
 
         .wc-compliments {
-          top: 58%;
+          top: 59.5%;
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
           font-weight: 600;
@@ -229,12 +230,12 @@ export default function Invite() {
           bottom: 0;
           left: 0;
           width: 100%;
-          height: 80px; /* height of the overlay gradient */
+          height: 80px; 
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: flex-end; /* push content to the bottom */
-          padding-bottom: 20px; /* distance from the very bottom */
+          justify-content: flex-end; 
+          padding-bottom: 20px; 
           gap: 4px;
           z-index: 15;
           pointer-events: none;
@@ -249,7 +250,7 @@ export default function Invite() {
           font-size: 0.85rem;
           letter-spacing: 0.15em;
           text-transform: lowercase;
-          color: #ffffff; /* pure white text */
+          color: #ffffff; 
           
           /* Text shadow for extra legibility */
           text-shadow: 0 1px 3px rgba(0,0,0,0.6);
@@ -272,7 +273,7 @@ export default function Invite() {
 
         @keyframes wc-bounce {
           0%, 20%, 50%, 80%, 100% {
-            transform: translateY(0) rotate(45deg); /* keep arrow rotation */
+            transform: translateY(0) rotate(45deg); 
           }
           40% {
             transform: translateY(6px) rotate(45deg);
@@ -304,45 +305,45 @@ export default function Invite() {
         /* ---------- Desktop overrides ---------- */
         @media (min-width: 900px) {
           .wc-cross {
-            top: 6%;
+            top: 5%;
             width: clamp(28px, 2.2vw, 42px);
           }
 
           .wc-invited {
-            top: 14.2%;
+            top: 11%;
             font-size: clamp(14px, 1vw, 18px);
           }
 
           .wc-ceremony {
-            top: 17.3%;
+            top: 14%;
             font-size: clamp(20px, 1.4vw, 26px);
           }
 
           .wc-parent-line {
-            font-size: clamp(12px, 0.9vw, 16px);
+            font-size: clamp(16px, 1.2vw, 20px); 
           }
-          .wc-bride-parents { top: 21.3%; }
-          .wc-groom-parents { top: 45.3%; }
+          .wc-bride-parents { top: 17.5%; }
+          .wc-groom-parents { top: 43.5%; }
 
           .wc-name {
             font-size: clamp(48px, 4vw, 72px);
           }
-          .wc-groom-name { top: 25.5%; }
-          .wc-bride-name { top: 37%; }
+          .wc-groom-name { top: 25%; }
+          .wc-bride-name { top: 36%; }
 
           .wc-role-label {
             font-size: clamp(10px, 0.7vw, 13px);
           }
-          .wc-groom-role { top: 30.7%; }
-          .wc-bride-role { top: 42.2%; }
+          .wc-groom-role { top: 30%; }
+          .wc-bride-role { top: 41.5%; }
 
           .wc-amp {
-            top: 32.5%;
+            top: 31%;
             font-size: clamp(30px, 2.4vw, 44px);
           }
 
           .wc-divider {
-            top: 48.6%;
+            top: 50%;
             font-size: clamp(12px, 0.8vw, 15px);
           }
           .wc-divider::before,
@@ -351,22 +352,22 @@ export default function Invite() {
           }
 
           .wc-date {
-            top: 51.5%;
+            top: 53%;
             font-size: clamp(18px, 1.3vw, 24px);
           }
 
           .wc-time {
-            top: 54.3%;
-            font-size: clamp(13px, 0.9vw, 17px);
+            top: 56%;
+            font-size: clamp(16px, 1.2vw, 20px); 
           }
 
           .wc-lunch {
-            top: 56.6%;
+            top: 58%;
             font-size: clamp(13px, 0.9vw, 17px);
           }
 
           .wc-compliments {
-            top: 58%;
+            top: 59.5%;
             font-size: clamp(15px, 1vw, 19px);
           }
 
@@ -444,7 +445,7 @@ export default function Invite() {
           <p className="wc-line wc-divider" />
 
           <p className="wc-line wc-date">On Saturday, 29th August, 2026</p>
-          <p className="wc-line wc-time">at 11:00 am</p>
+          <p className="wc-line wc-time">at 11:00 am</p>  
 
           <p className="wc-line wc-compliments">
             Best compliments from family members

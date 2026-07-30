@@ -41,8 +41,19 @@ function FallingParticle({ id }) {
 // Aesthetic geometric separator element mirroring traditional line-drawings
 function CornerFlourish({ className }) {
   return (
-    <svg className={className} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M5,95 L5,5 L95,5" stroke="#b8874f" strokeWidth="1" strokeLinecap="round" strokeDasharray="4 4" />
+    <svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5,95 L5,5 L95,5"
+        stroke="#b8874f"
+        strokeWidth="1"
+        strokeLinecap="round"
+        strokeDasharray="4 4"
+      />
       <circle cx="5" cy="5" r="3" fill="#b8874f" />
     </svg>
   );
@@ -84,7 +95,7 @@ function PastelSideDecor({ mirrored }) {
 export default function VenueSection() {
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
-  
+
   // Creates an array of 20 elements for falling particles
   const particles = Array.from({ length: 20 }, (_, i) => i);
 
@@ -95,7 +106,7 @@ export default function VenueSection() {
           setIsVisible(true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (sectionRef.current) observer.observe(sectionRef.current);
@@ -103,7 +114,11 @@ export default function VenueSection() {
   }, []);
 
   const handleMapRedirect = () => {
-    window.open("https://maps.app.goo.gl/Het3WCiPber8ocNn6", "_blank", "noopener,noreferrer");
+    window.open(
+      "https://maps.app.goo.gl/Het3WCiPber8ocNn6",
+      "_blank",
+      "noopener,noreferrer",
+    );
   };
 
   return (
@@ -405,9 +420,12 @@ export default function VenueSection() {
         aria-hidden="true"
         className="wc-venue-corner-floral"
       />
-      
+
       {/* Right side decor only */}
-      <div className="wc-venue-pastel-decor-wrap wc-venue-pastel-decor-wrap--right" aria-hidden="true">
+      <div
+        className="wc-venue-pastel-decor-wrap wc-venue-pastel-decor-wrap--right"
+        aria-hidden="true"
+      >
         <PastelSideDecor mirrored />
       </div>
 
@@ -415,26 +433,47 @@ export default function VenueSection() {
       <div className="wc-venue-card">
         <div className="wc-venue-media">
           <div className="wc-church-frame">
-            <img className="wc-church-frame__img" src="/church.webp" alt="St. Jude's Church" />
+            <img
+              className="wc-church-frame__img"
+              src="/church.webp"
+              alt="St. Jude's Church"
+            />
           </div>
         </div>
 
         <div className="wc-venue-text">
           <p className="wc-venue__eyebrow">Venue</p>
-          <h3 className="wc-venue__title">St. Mary's Syro-Malabar Church, Kodanchery</h3>
+          <h3 className="wc-venue__title">
+            St Mary’s Forane Church Kodenchery
+          </h3>
 
           <p className="wc-venue__quote">
-            "Two paths crossing in silence, bound forever by love, built upon grace, and blessed under the eye of Heaven."
+            "Two paths crossing in silence, bound forever by love, built upon
+            grace, and blessed under the eye of Heaven."
           </p>
 
           <div className="wc-venue__time-block">
-            Solemn Ceremony at 11:00 AM Sharp • All Are Welcome
+            Solemn Ceremony at 10:30 AM All Are Welcome
           </div>
 
           {/* Mapbox Trigger Interface Container */}
-          <div className="wc-map-anchor-box" onClick={handleMapRedirect} role="button" tabIndex={0}>
+          <div
+            className="wc-map-anchor-box"
+            onClick={handleMapRedirect}
+            role="button"
+            tabIndex={0}
+          >
             <div className="wc-map-icon-wrapper">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b8874f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#b8874f"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                 <circle cx="12" cy="10" r="3" />
               </svg>
