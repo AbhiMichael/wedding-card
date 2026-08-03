@@ -139,10 +139,15 @@ export default function Invite() {
 
         .wc-parent-line {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 3.5cqw; 
+          font-size: 3.9cqw;
+          font-weight: 400;
           letter-spacing: 0.02em;
           color: #5b3f26;
           line-height: 1.3;
+        }
+
+        .wc-house-name {
+          font-weight: 700;
         }
 
         .wc-bride-parents { top: 17.5%; }
@@ -176,20 +181,22 @@ export default function Invite() {
           color: #6b4a2b;
         }
 
-        .wc-divider {
-          top: 50%;
-          font-size: 2.4cqw;
+        .wc-siblings-title {
+          top: 50.6%;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.6cqw;
+          letter-spacing: 0.35em;
+          text-transform: uppercase;
           color: #8a6d3f;
         }
-        .wc-divider::before,
-        .wc-divider::after {
-          content: "";
-          display: inline-block;
-          width: 18cqw;
-          height: 1px;
-          background: #b8874f;
-          vertical-align: middle;
-          margin: 0 0.8em;
+
+        .wc-siblings {
+          top: 51.6%;
+          font-family: 'Cormorant Garamond', serif;
+          font-style: italic;
+          font-size: 2.7cqw;
+          letter-spacing: 0.03em;
+          color: #6b4a2b;
         }
 
         .wc-date {
@@ -320,7 +327,8 @@ export default function Invite() {
           }
 
           .wc-parent-line {
-            font-size: clamp(16px, 1.2vw, 20px); 
+            font-size: clamp(18px, 1.4vw, 23px);
+            font-weight: 400;
           }
           .wc-bride-parents { top: 17.5%; }
           .wc-groom-parents { top: 43.5%; }
@@ -342,13 +350,14 @@ export default function Invite() {
             font-size: clamp(30px, 2.4vw, 44px);
           }
 
-          .wc-divider {
-            top: 50%;
-            font-size: clamp(12px, 0.8vw, 15px);
+          .wc-siblings-title {
+            top: 50.6%;
+            font-size: clamp(9px, 0.65vw, 12px);
           }
-          .wc-divider::before,
-          .wc-divider::after {
-            width: clamp(80px, 6vw, 160px);
+
+          .wc-siblings {
+            top: 51.6%;
+            font-size: clamp(15px, 1.05vw, 20px);
           }
 
           .wc-date {
@@ -427,7 +436,7 @@ export default function Invite() {
           <p className="wc-line wc-ceremony">WEDDING CEREMONY OF</p>
 
           <p className="wc-line wc-parent-line wc-bride-parents">
-            S/o Late Mr. Joseph P.J &amp; Dr. Lalimma Joseph, Puthiyedath House
+            S/o Late Mr. Joseph P.J &amp; Dr. Lalimma Joseph, <span className="wc-house-name">Puthiyedath House</span>
           </p>
 
           <p className="wc-line wc-name wc-groom-name">Joel</p>
@@ -439,10 +448,14 @@ export default function Invite() {
           <p className="wc-line wc-role-label wc-bride-role"></p>
 
           <p className="wc-line wc-parent-line wc-groom-parents">
-            D/o Mr. Saji Joseph &amp; Mrs. Reji Saji, Thaimattathil House
+            D/o Mr. Saji Joseph &amp; Mrs. Reji Saji, <span className="wc-house-name">Thaimattathil House</span>
           </p>
 
-          <p className="wc-line wc-divider" />
+          <p className="wc-line wc-siblings-title">Siblings</p>
+
+          <p className="wc-line wc-siblings">
+            Tom Joseph &bull; Geo Kurian &bull; Jisna Kurian
+          </p>
 
           <p className="wc-line wc-date">On Saturday, 29th August, 2026</p>
           <p className="wc-line wc-time">at 10:30 am</p>
