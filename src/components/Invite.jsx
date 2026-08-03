@@ -182,19 +182,19 @@ export default function Invite() {
         }
 
         .wc-siblings-title {
-          top: 50.6%;
+          top: 49.5%;
           font-family: 'Cormorant Garamond', serif;
-          font-size: 1.6cqw;
+          font-size: 2cqw;
           letter-spacing: 0.35em;
           text-transform: uppercase;
           color: #8a6d3f;
         }
 
         .wc-siblings {
-          top: 51.6%;
+          top: 50.2%;
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
-          font-size: 2.7cqw;
+          font-size: 3.2cqw;
           letter-spacing: 0.03em;
           color: #6b4a2b;
         }
@@ -351,13 +351,13 @@ export default function Invite() {
           }
 
           .wc-siblings-title {
-            top: 50.6%;
-            font-size: clamp(9px, 0.65vw, 12px);
+            top: 49.5%;
+            font-size: clamp(11px, 0.8vw, 14px);
           }
 
           .wc-siblings {
-            top: 51.6%;
-            font-size: clamp(15px, 1.05vw, 20px);
+            top: 50.2%;
+            font-size: clamp(17px, 1.2vw, 23px);
           }
 
           .wc-date {
