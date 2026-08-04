@@ -181,26 +181,8 @@ export default function Invite() {
           color: #6b4a2b;
         }
 
-        .wc-siblings-title {
-          top: 49.5%;
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 2cqw;
-          letter-spacing: 0.35em;
-          text-transform: uppercase;
-          color: #8a6d3f;
-        }
-
-        .wc-siblings {
-          top: 50.2%;
-          font-family: 'Cormorant Garamond', serif;
-          font-style: italic;
-          font-size: 3.2cqw;
-          letter-spacing: 0.03em;
-          color: #6b4a2b;
-        }
-
         .wc-date {
-          top: 53%;
+          top: 49.5%;
           font-family: 'Playfair Display', serif;
           font-weight: 700;
           font-size: 3.6cqw;
@@ -208,25 +190,35 @@ export default function Invite() {
         }
 
         .wc-time {
-          top: 56%;
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 3.5cqw; 
-          color: #5b3f26;
+          top: 52.5%;
+          font-family: 'Playfair Display', serif;
+          font-weight: 700;
+          font-size: 3.6cqw;
+          color: #4a3220;
         }
 
         .wc-lunch {
-          top: 58%;
+          top: 54.5%;
           font-family: 'Cormorant Garamond', serif;
           font-size: 2.6cqw;
           color: #5b3f26;
         }
 
-        .wc-compliments {
-          top: 59.5%;
+        .wc-wishes-title {
+          top: 57.5%;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 2cqw;
+          letter-spacing: 0.35em;
+          text-transform: uppercase;
+          color: #8a6d3f;
+        }
+
+        .wc-wishes-names {
+          top: 58.3%;
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
           font-weight: 600;
-          font-size: 3cqw;
+          font-size: 3.2cqw;
           letter-spacing: 0.03em;
           color: #6b4a2b;
         }
@@ -350,33 +342,28 @@ export default function Invite() {
             font-size: clamp(30px, 2.4vw, 44px);
           }
 
-          .wc-siblings-title {
-            top: 49.5%;
-            font-size: clamp(11px, 0.8vw, 14px);
-          }
-
-          .wc-siblings {
-            top: 50.2%;
-            font-size: clamp(17px, 1.2vw, 23px);
-          }
-
           .wc-date {
-            top: 53%;
+            top: 49.5%;
             font-size: clamp(18px, 1.3vw, 24px);
           }
 
           .wc-time {
-            top: 56%;
+            top: 52.5%;
             font-size: clamp(16px, 1.2vw, 20px); 
           }
 
           .wc-lunch {
-            top: 58%;
+            top: 54.5%;
             font-size: clamp(13px, 0.9vw, 17px);
           }
 
-          .wc-compliments {
-            top: 59.5%;
+          .wc-wishes-title {
+            top: 57.5%;
+            font-size: clamp(11px, 0.8vw, 14px);
+          }
+
+          .wc-wishes-names {
+            top: 58.3%;
             font-size: clamp(15px, 1vw, 19px);
           }
 
@@ -451,17 +438,12 @@ export default function Invite() {
             D/o Mr. Saji Joseph &amp; Mrs. Reji Saji, <span className="wc-house-name">Thaimattathil House</span>
           </p>
 
-          <p className="wc-line wc-siblings-title">Siblings</p>
-
-          <p className="wc-line wc-siblings">
-            Tom Joseph &bull; Geo Kurian &bull; Jisna Kurian
-          </p>
-
           <p className="wc-line wc-date">On Saturday, 29th August, 2026</p>
           <p className="wc-line wc-time">at 10:30 am</p>
 
-          <p className="wc-line wc-compliments">
-            Best compliments from family members
+          <p className="wc-line wc-wishes-title">Best wishes from</p>
+          <p className="wc-line wc-wishes-names">
+            Tom Joseph &bull; Geo Kurian &bull; Jisna Kurian
           </p>
         </div>
 
